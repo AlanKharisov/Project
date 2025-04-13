@@ -1,15 +1,12 @@
 @font-face {
     font-family: 'ROBO';
-    src: url('fonts/ROBO.woff2') format('woff2');
+    src: url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
     font-weight: 400;
-    font-style: normal;
 }
 
 @font-face {
     font-family: 'Alata';
-    src: url('fonts/Alata.woff2') format('woff2');
-    font-weight: 400;
-    font-style: normal;
+    src: url('https://fonts.googleapis.com/css2?family=Alata&display=swap');
 }
 
 * {
@@ -23,6 +20,59 @@ body {
     font-family: 'Roboto', sans-serif;
     overflow: hidden;
     height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.splash-screen .mark-identity {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    font-size: 54px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    letter-spacing: 0.5px;
+}
+
+.splash-screen .mark-identity span {
+    font-family: 'Alata', sans-serif;
+    font-weight: 400; 
+    font-size: 28px;
+    letter-spacing: 0.3px;
+}
+
+/* Welcome Screen */
+.welcome-title {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    font-size: 48px;
+    margin-bottom: 20px;
+    color: white;
+    letter-spacing: 0.5px;
+}
+
+.feature-item span {
+    font-family: 'Alata', sans-serif;
+    font-weight: 400; 
+    font-size: 20px;
+    color: #01FF77;
+    letter-spacing: 0.3px;
+}
+
+.auth-title {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700; 
+    font-size: 32px;
+    color: white;
+    letter-spacing: 0.5px;
+}
+
+.icon-feature {
+    font-size: 30px;
+    color: #01FF77;
+    margin-left: 15px;
 }
 
 .background {
@@ -33,9 +83,10 @@ body {
     height: 100%;
     background-image: url('img/056026b6db13070cbe45543d3d1ef857.png');
     background-size: cover;
-    background-position: left;
+    background-position: 30% center; 
+    background-repeat: no-repeat;
     z-index: -1;
-    transition: background-position 1s ease;
+    transition: background-position 0.8s cubic-bezier(0.33, 1, 0.68, 1); 
 }
 
 .screen {
@@ -43,6 +94,7 @@ body {
     width: 100%;
     height: 100%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     opacity: 0;
@@ -63,30 +115,6 @@ body {
     width: 100%;
 }
 
-/* Splash Screen */
-.splash-screen .mark-identity {
-    font-family: 'ROBO', sans-serif;
-    font-weight: 400;
-    font-size: 72px;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-}
-
-.splash-screen .mark-identity span {
-    font-family: 'Alata', sans-serif;
-    font-size: 36px;
-}
-
-/* Welcome Screen */
-.welcome-screen .welcome-title {
-    font-size: 48px;
-    margin-bottom: 20px;
-    color: white;
-}
-
 .welcome-screen .welcome-text {
     font-size: 24px;
     margin-bottom: 40px;
@@ -103,21 +131,48 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 15px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.welcome-screen .feature-item span {
-    font-family: 'Roboto', sans-serif;
-    font-size: 20px;
-    color: #01FF77;
-    text-align: left;
-    flex-grow: 1;
-}
-
-.welcome-screen .feature-item i {
-    font-size: 24px;
-    color: #01FF77;
+.icon {
+    position: relative;
+    width: 50px;
+    height: 50px;
     margin-left: 20px;
+}
+
+.brain-icon::before,
+.lock-icon::before,
+.magic-icon::before {
+    content: "";
+    position: absolute;
+    border: solid #01FF77;
+}
+
+.brain-icon::before {
+    left: 8.33%;
+    right: 8.33%;
+    top: 8.3%;
+    bottom: 8.35%;
+    border-width: 3.78px;
+    border-radius: 50%;
+}
+
+.lock-icon::before {
+    left: 12.5%;
+    right: 12.5%;
+    top: 8.33%;
+    bottom: 8.33%;
+    border-width: 3.57px;
+    border-radius: 5px;
+}
+
+.magic-icon::before {
+    left: 8.34%;
+    right: 8.32%;
+    top: 8.33%;
+    bottom: 8.32%;
+    border-width: 3.46px;
+    border-radius: 50%;
 }
 
 .next-btn-container {
@@ -135,9 +190,6 @@ body {
     font-weight: bold;
     cursor: pointer;
     border-radius: 30px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
 }
 
 .next-btn:hover {
@@ -151,38 +203,43 @@ body {
     color: white;
 }
 
-/* Auth Screen */
 .auth-screen {
     background: rgba(0, 0, 0, 0.5);
+    justify-content: flex-start;
+    padding-top: 60px;
+}
+
+.auth-header {
+    width: 100%;
+    max-width: 350px;
+    margin-bottom: 20px;
+    text-align: center;
 }
 
 .auth-container {
     background: white;
-    padding: 40px;
+    padding: 30px;
     border-radius: 15px;
     width: 100%;
-    max-width: 400px;
+    max-width: 350px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 .auth-form {
     display: none;
+    width: 100%;
 }
 
 .auth-form.active {
-    display: block;
-}
-
-.auth-form h2 {
-    color: #000;
-    margin-bottom: 30px;
-    font-size: 28px;
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .form-group {
     margin-bottom: 20px;
     text-align: left;
+    width: 100%;
 }
 
 .form-group label {
@@ -207,7 +264,7 @@ body {
     color: #999;
 }
 
-.auth-form button[type="submit"] {
+.submit-btn {
     width: 100%;
     padding: 15px;
     background: #888;
@@ -221,15 +278,17 @@ body {
 }
 
 .forgot-password {
-    width: 100%;
     background: none;
     border: none;
-    color: #01FF77;
+    color: #888;
     font-size: 14px;
     margin-top: 15px;
     cursor: pointer;
-    padding: 10px;
+    padding: 5px 0;
     text-decoration: underline;
+    float: left;
+    width: 100%;
+    text-align: left;
 }
 
 .divider {
@@ -238,6 +297,8 @@ body {
     text-align: center;
     position: relative;
     font-size: 14px;
+    clear: both;
+    width: 100%;
 }
 
 .divider::before,
@@ -263,11 +324,12 @@ body {
     justify-content: center;
     gap: 15px;
     margin-top: 20px;
+    width: 100%;
 }
 
 .social-btn {
-    width: 50px;
-    height: 50px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
     border: 1px solid #ddd;
     font-size: 18px;
@@ -279,14 +341,13 @@ body {
     color: #333;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .splash-screen .mark-identity {
-        font-size: 60px;
+        font-size: 48px;
     }
     
     .splash-screen .mark-identity span {
-        font-size: 30px;
+        font-size: 24px;
     }
     
     .welcome-screen .welcome-title {
@@ -302,21 +363,18 @@ body {
     }
     
     .auth-container {
-        padding: 30px;
+        padding: 25px;
     }
 }
 
 @media (max-width: 480px) {
     .splash-screen .mark-identity {
-        font-size: 48px;
-        flex-wrap: wrap;
-        gap: 0;
+        font-size: 40px;
+        gap: 5px;
     }
     
     .splash-screen .mark-identity span {
-        font-size: 24px;
-        width: 100%;
-        text-align: center;
+        font-size: 20px;
     }
     
     .welcome-screen .welcome-title {
@@ -331,13 +389,39 @@ body {
         font-size: 16px;
     }
     
+    .icon {
+        width: 40px;
+        height: 40px;
+        margin-left: 10px;
+    }
+    
+    .brain-icon::before {
+        border-width: 3px;
+    }
+    
+    .lock-icon::before {
+        border-width: 2.8px;
+    }
+    
+    .magic-icon::before {
+        border-width: 2.7px;
+    }
+    
     .auth-container {
-        padding: 25px;
+        padding: 20px;
         max-width: 90%;
     }
     
     .social-btn {
-        width: 45px;
-        height: 45px;
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .icon-feature {
+        font-size: 24px;
+        margin-left: 10px;
     }
 }
