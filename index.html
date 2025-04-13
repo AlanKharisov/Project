@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MagicPattern</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div class="screen splash-screen active">
+        <div class="content">
+            <h1 class="mark-identity">MARK <span>Identity</span></h1>
+        </div>
+    </div>
+
+    <!-- Welcome Screen -->
+    <div class="screen welcome-screen">
+        <div class="content">
+            <h1 class="welcome-title">Welcome</h1>
+            <p class="welcome-text">Is not just a platform – it’s your safeguard for creative ownership</p>
+            <div class="features">
+                <div class="feature-item">
+                    <span>PROTECT YOUR PROPERTY</span>
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="feature-item">
+                    <span>SECURE YOUR IDEAS</span>
+                    <i class="fas fa-lock"></i>
+                </div>
+                <div class="feature-item">
+                    <span>EXPERIENCE YOUR LEGACY</span>
+                    <i class="fas fa-magic"></i>
+                </div>
+            </div>
+            <div class="next-btn-container">
+                <button class="next-btn">Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Screen -->
+    <div class="screen auth-screen">
+        <div class="auth-container">
+            <!-- Sign Up Form -->
+            <div class="auth-form signup-form active">
+                <h2>Sign Up</h2>
+                <form>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" placeholder="+380995683023" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" placeholder="Enter password" required>
+                    </div>
+                    <button type="submit">Sign Up</button>
+                </form>
+                <p class="divider">or</p>
+                <div class="social-buttons">
+                    <button class="social-btn facebook"><i class="fab fa-facebook-f"></i></button>
+                    <button class="social-btn google"><i class="fab fa-google"></i></button>
+                    <button class="social-btn apple"><i class="fab fa-apple"></i></button>
+                </div>
+            </div>
+
+            <!-- Sign In Form -->
+            <div class="auth-form login-form">
+                <h2>Sign In</h2>
+                <form>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" placeholder="+380995683023" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" placeholder="Enter password" required>
+                    </div>
+                    <button type="submit">Sign In</button>
+                    <button class="forgot-password">Forgot password?</button>
+                </form>
+                <p class="divider">or</p>
+                <div class="social-buttons">
+                    <button class="social-btn facebook"><i class="fab fa-facebook-f"></i></button>
+                    <button class="social-btn google"><i class="fab fa-google"></i></button>
+                    <button class="social-btn apple"><i class="fab fa-apple"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Background -->
+    <div class="background"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
