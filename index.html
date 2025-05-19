@@ -1,104 +1,1904 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MagicPattern</title>
+    <title>MARKIdentity - NFT Platform</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Alata&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Alata&display=swap" rel="stylesheet">
+    <style>
+        /* Общие стили */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            max-width: 500px;
+            margin: 0 auto;
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #f5f5f5;
+        }
+
+        /* Фоновое изображение */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('img/056026b6db13070cbe45543d3d1ef857.png');
+            background-size: cover;
+            background-position: 30% center;
+            background-repeat: no-repeat;
+            z-index: -1;
+            transition: background-position 0.8s cubic-bezier(0.33, 1, 0.68, 1);
+        }
+
+        /* Экраны авторизации */
+        .screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .screen.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .content {
+            text-align: center;
+            color: white;
+            width: 100%;
+            max-width: 350px;
+        }
+
+        /* Splash Screen */
+        .mark-identity {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 54px;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            letter-spacing: 0.5px;
+            color: white;
+        }
+
+        .mark-identity span {
+            font-family: 'Alata', sans-serif;
+            font-weight: 400;
+            font-size: 28px;
+            letter-spacing: 0.3px;
+            color: #01FF77;
+        }
+
+        /* Welcome Screen */
+        .welcome-title {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: white;
+            letter-spacing: 0.5px;
+        }
+
+        .welcome-text {
+            font-size: 24px;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .features {
+            margin: 30px auto;
+            max-width: 500px;
+        }
+
+        .feature-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .feature-item span {
+            font-family: 'Alata', sans-serif;
+            font-weight: 400;
+            font-size: 20px;
+            color: #01FF77;
+            letter-spacing: 0.3px;
+        }
+
+        .icon-feature {
+            font-size: 30px;
+            color: #01FF77;
+            margin-left: 15px;
+        }
+
+        .next-btn-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        /* Обновленные стили кнопок с анимацией переливающихся цветов */
+        .next-btn, .submit-btn, .continue-btn, .create-nft-btn, .buy-btn, .generate-qr-btn {
+            padding: 15px 40px;
+            background: #01FF77;
+            color: #000;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 30px;
+            border: none;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .next-btn:hover, .submit-btn:hover, .continue-btn:hover, 
+        .create-nft-btn:hover, .buy-btn:hover, .generate-qr-btn:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .next-btn::before, .submit-btn::before, .continue-btn::before, 
+        .create-nft-btn::before, .buy-btn::before, .generate-qr-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(115deg, 
+                          #01FF77, 
+                          #00E676, 
+                          #01FF77, 
+                          #00E676);
+            background-size: 50% 100%;
+            z-index: -1;
+            transition: all 0.5s ease;
+        }
+
+        .next-btn:hover::before, .submit-btn:hover::before, .continue-btn:hover::before, 
+        .create-nft-btn:hover::before, .buy-btn:hover::before, .generate-qr-btn:hover::before {
+            animation: gradientBG 1.5s ease infinite;
+            background-position: 100% 0;
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Активное состояние кнопки (при нажатии) */
+        .next-btn:active, .submit-btn:active, .continue-btn:active, 
+        .create-nft-btn:active, .buy-btn:active, .generate-qr-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Auth Screen */
+        .auth-screen {
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: flex-start;
+            padding-top: 60px;
+        }
+
+        .auth-form {
+            display: none;
+            width: 100%;
+            max-width: 350px;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .auth-header {
+            width: 100%;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .auth-title {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 32px;
+            color: white;
+            letter-spacing: 0.5px;
+        }
+
+        .auth-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .form-group input::placeholder {
+            color: #999;
+        }
+
+        .forgot-password {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 14px;
+            margin-top: 15px;
+            cursor: pointer;
+            padding: 5px 0;
+            text-decoration: underline;
+            float: left;
+            width: 100%;
+            text-align: left;
+        }
+
+        .divider {
+            color: #999;
+            margin: 25px 0;
+            text-align: center;
+            position: relative;
+            font-size: 14px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background: #ddd;
+        }
+
+        .divider::before {
+            left: 0;
+        }
+
+        .divider::after {
+            right: 0;
+        }
+
+        .social-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 1px solid #ddd;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+
+        .social-btn:hover {
+            background: #01FF77;
+            color: white;
+            border-color: #01FF77;
+        }
+
+        .switch-auth {
+            margin-top: 15px;
+            color: #888;
+            font-size: 14px;
+        }
+
+        .switch-auth a {
+            color: #01FF77;
+            text-decoration: none;
+        }
+
+        /* Основное приложение */
+        .app-content {
+            display: none;
+            height: 100vh;
+            overflow-y: auto;
+            background-color: #f5f5f5;
+        }
+
+        .app-content.active {
+            display: block;
+        }
+
+        .page {
+            display: none;
+            padding-bottom: 70px;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Home Page */
+        .home-page .search-bar {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background-color: white;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .home-page .search-input {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            background-color: #f5f5f5;
+            border-radius: 20px;
+            padding: 8px 15px;
+            margin: 0 10px;
+        }
+
+        .home-page .search-input i {
+            color: #888;
+            margin-right: 8px;
+        }
+
+        .home-page .search-input input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 16px;
+        }
+
+        .home-page .menu-icon {
+            font-size: 20px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .home-page .nft-post {
+            background-color: white;
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .home-page .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .home-page .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #ddd;
+            margin-right: 10px;
+            overflow: hidden;
+        }
+
+        .home-page .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .home-page .username {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .home-page .post-time {
+            font-size: 12px;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        .home-page .nft-title {
+            color: #01FF77;
+            font-weight: bold;
+            font-size: 18px;
+            margin: 10px 0;
+        }
+
+        .home-page .nft-description {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .home-page .tags {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .home-page .tag {
+            color: #01FF77;
+            font-size: 12px;
+            margin-right: 8px;
+            margin-bottom: 5px;
+        }
+
+        .home-page .nft-content {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .home-page .nft-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-right: 15px;
+        }
+
+        .home-page .nft-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .home-page .sound-wave {
+            flex: 1;
+            background-color: #f5f5f5;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 14px;
+        }
+
+        .home-page .post-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 10px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .home-page .action-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .home-page .like-btn, 
+        .home-page .comment-btn, 
+        .home-page .share-btn {
+            display: flex;
+            align-items: center;
+            margin-right: 15px;
+            color: #333;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .home-page .like-btn:hover, 
+        .home-page .comment-btn:hover, 
+        .home-page .share-btn:hover {
+            color: #01FF77;
+        }
+
+        .home-page .like-btn i, 
+        .home-page .comment-btn i, 
+        .home-page .share-btn i {
+            margin-right: 5px;
+            font-size: 18px;
+        }
+
+        /* Wallet Page */
+        .wallet-section {
+            padding: 0 20px;
+        }
+
+        .wallet-title {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            padding-top: 20px;
+            color: #333;
+        }
+
+        .tokens-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            padding: 10px 0;
+            scrollbar-width: none;
+        }
+
+        .tokens-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .token-card {
+            min-width: 120px;
+            border: 2px solid #4CAF50;
+            border-radius: 10px;
+            padding: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .token-card:hover {
+            border-color: #2E7D32;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .token-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .token-name {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .token-logo {
+            width: 24px;
+            height: 24px;
+            background-color: #ddd;
+            border-radius: 50%;
+        }
+
+        .token-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 15px;
+        }
+
+        .token-divider {
+            border-top: 1px dashed #ccc;
+            flex-grow: 1;
+            margin: 0 5px;
+            align-self: flex-end;
+        }
+
+        .token-placeholder {
+            color: #888;
+            font-size: 14px;
+        }
+
+        .token-usd {
+            color: black;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .token-card:hover .token-usd {
+            color: #4CAF50;
+        }
+
+        .nft-section {
+            padding: 20px;
+        }
+
+        .nft-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .nft-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .config-button {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .nft-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .nft-item {
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: white;
+            aspect-ratio: 16/9;
+            position: relative;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        .nft-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .nft-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Alert Page */
+        .alert-page {
+            padding: 15px;
+        }
+
+        .alert-page .alert-title {
+            font-weight: bold;
+            font-size: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .alert-page .notification {
+            background-color: #e0f7fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .alert-page .notification:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .alert-page .notification-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .alert-page .notification-time {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .alert-page .notification-text {
+            font-size: 14px;
+            color: #333;
+        }
+
+        /* Profile Page */
+        .profile-page .profile-header {
+            background-color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .profile-page .back-btn {
+            position: absolute;
+            left: 15px;
+            top: 20px;
+            background-color: #01FF77;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .profile-page .back-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .profile-page .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            overflow: hidden;
+            background-color: #ddd;
+        }
+
+        .profile-page .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-page .profile-name {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .profile-page .profile-location {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .profile-page .profile-bio {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 20px;
+            padding: 0 20px;
+        }
+
+        .profile-page .section-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin: 15px;
+        }
+
+        .profile-page .account-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 0 15px 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .profile-page .account-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .profile-page .account-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .profile-page .account-item:last-child {
+            border-bottom: none;
+        }
+
+        .profile-page .account-item i {
+            color: #01FF77;
+            margin-right: 10px;
+        }
+
+        /* Форма добавления NFT */
+        .add-nft-page {
+            padding: 20px;
+        }
+
+        .add-nft-title {
+            font-weight: bold;
+            font-size: 20px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .add-nft-subtitle {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #666;
+        }
+
+        .form-section {
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .upload-area {
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: #01FF77;
+            background-color: #f5f5f5;
+        }
+
+        .upload-icon {
+            width: 60px;
+            height: 60px;
+            background-color: #f5f5f5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .upload-text {
+            text-align: left;
+        }
+
+        .upload-text strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .upload-text small {
+            color: #888;
+            font-size: 12px;
+            display: block;
+        }
+
+        .input-group {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .input-field {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        .input-field:last-child {
+            margin-right: 0;
+        }
+
+        .input-field label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .input-field input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f5f5f5;
+            transition: all 0.3s ease;
+        }
+
+        .input-field input:focus {
+            border-color: #01FF77;
+            box-shadow: 0 0 0 2px rgba(1, 255, 119, 0.2);
+        }
+
+        .blockchain-options {
+            margin-bottom: 20px;
+        }
+
+        .blockchain-option {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .blockchain-option:hover {
+            border-color: #01FF77;
+            transform: translateY(-3px);
+        }
+
+        .blockchain-option.selected {
+            border-color: #01FF77;
+            background-color: #f0fff0;
+        }
+
+        .blockchain-logo {
+            width: 40px;
+            height: 40px;
+            background-color: #ddd;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+
+        .blockchain-info {
+            flex: 1;
+        }
+
+        .blockchain-name {
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .blockchain-name .tag {
+            background-color: #01FF77;
+            color: black;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+
+        .blockchain-details {
+            color: #888;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .nft-type-options {
+            margin-bottom: 20px;
+        }
+
+        .nft-type-option {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .nft-type-option:hover {
+            border-color: #01FF77;
+            transform: translateY(-3px);
+        }
+
+        .nft-type-option.selected {
+            border-color: #01FF77;
+            background-color: #f0fff0;
+        }
+
+        .nft-type-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #ddd;
+            border-radius: 50%;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nft-type-info {
+            flex: 1;
+        }
+
+        .nft-type-name {
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .nft-type-description {
+            color: #888;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .ownership-options {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .ownership-option {
+            flex: 1;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            margin-right: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .ownership-option:hover {
+            border-color: #01FF77;
+            transform: translateY(-3px);
+        }
+
+        .ownership-option:last-child {
+            margin-right: 0;
+        }
+
+        .ownership-option.selected {
+            border-color: #01FF77;
+            background-color: #f0fff0;
+        }
+
+        .ownership-option i {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f5f5f5;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .text-input:focus {
+            border-color: #01FF77;
+            box-shadow: 0 0 0 2px rgba(1, 255, 119, 0.2);
+        }
+
+        .tags-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f5f5f5;
+            margin-bottom: 15px;
+        }
+
+        .attributes-control {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .attributes-count {
+            margin: 0 15px;
+            font-weight: bold;
+        }
+
+        .attribute-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #f5f5f5;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .attribute-btn:hover {
+            background-color: #01FF77;
+            color: white;
+        }
+
+        .add-trait-btn {
+            display: flex;
+            align-items: center;
+            color: #01FF77;
+            font-weight: bold;
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .add-trait-btn:hover {
+            color: #00cc5e;
+        }
+
+        .add-trait-btn i {
+            margin-right: 5px;
+        }
+
+        /* QR Code Section */
+        .qr-section {
+            margin-top: 30px;
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .qr-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .qr-container {
+            margin: 0 auto;
+            width: fit-content;
+            padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+        }
+
+        /* Нижняя навигация */
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            background-color: white;
+            border-top: 1px solid #ddd;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 500px;
+            z-index: 100;
+        }
+
+        .nav-item {
+            text-align: center;
+            padding: 5px;
+            cursor: pointer;
+            color: #888;
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover {
+            color: #01FF77;
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .nav-item.active {
+            color: black;
+        }
+
+        /* Адаптивные стили */
+        @media (max-width: 480px) {
+            .home-page .nft-content {
+                flex-direction: column;
+            }
+            
+            .home-page .nft-image {
+                width: 100%;
+                height: 200px;
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+            
+            .home-page .sound-wave {
+                height: 60px;
+            }
+            
+            .input-group {
+                flex-direction: column;
+            }
+            
+            .input-field {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .ownership-options {
+                flex-direction: column;
+            }
+            
+            .ownership-option {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
 </head>
-
 <body>
-    <div class="screen splash-screen active">
-        <div class="content">
-            <h1 class="mark-identity">MARK<span>Identity</span></h1>
+    <div id="app">
+        <!-- Фоновое изображение -->
+        <div class="background" :style="{backgroundPosition: backgroundPosition}"></div>
+
+        <!-- Экраны авторизации -->
+        <div class="screen splash-screen" :class="{active: currentScreen === 'splash'}">
+            <div class="content">
+                <h1 class="mark-identity">MARK<span>Identity</span></h1>
+            </div>
+        </div>
+
+        <div class="screen welcome-screen" :class="{active: currentScreen === 'welcome'}">
+            <div class="content">
+                <h1 class="welcome-title">Welcome</h1>
+                <p class="welcome-text">Is not just a platform – it's your safeguard for creative ownership</p>
+                <div class="features">
+                    <div class="feature-item">
+                        <span>PROTECT YOUR PROPERTY</span>
+                        <i class="fas fa-brain icon-feature"></i>
+                    </div>
+                    <div class="feature-item">
+                        <span>SECURE YOUR IDEAS</span>
+                        <i class="fas fa-lock icon-feature"></i>
+                    </div>
+                    <div class="feature-item">
+                        <span>EXPERIENCE YOUR LEGACY</span>
+                        <i class="fas fa-magic icon-feature"></i>
+                    </div>
+                </div>
+                <div class="next-btn-container">
+                    <button class="next-btn" @click="currentScreen = 'auth'">Next</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="screen auth-screen" :class="{active: currentScreen === 'auth'}">
+            <div class="auth-form signup-form" :class="{active: currentAuthForm === 'signup'}">
+                <div class="auth-header">
+                    <h2 class="auth-title">Sign Up</h2>
+                </div>
+                <div class="auth-container">
+                    <form @submit.prevent="handleAuth('signup')">
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" placeholder="+380995683023" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" placeholder="Enter password" required>
+                        </div>
+                        <button type="submit" class="submit-btn">Sign Up</button>
+                    </form>
+                    <p class="divider">or</p>
+                    <div class="social-buttons">
+                        <button class="social-btn facebook"><i class="fab fa-facebook-f"></i></button>
+                        <button class="social-btn google"><i class="fab fa-google"></i></button>
+                        <button class="social-btn apple"><i class="fab fa-apple"></i></button>
+                    </div>
+                    <p class="switch-auth">Already have an account? <a href="#" @click.prevent="currentAuthForm = 'login'">Sign In</a></p>
+                </div>
+            </div>
+
+            <div class="auth-form login-form" :class="{active: currentAuthForm === 'login'}">
+                <div class="auth-header">
+                    <h2 class="auth-title">Sign In</h2>
+                </div>
+                <div class="auth-container">
+                    <form @submit.prevent="handleAuth('login')">
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" placeholder="+380995683023" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" placeholder="Enter password" required>
+                        </div>
+                        <button type="submit" class="submit-btn">Sign In</button>
+                        <button class="forgot-password">Forgot password?</button>
+                    </form>
+                    <p class="divider">or</p>
+                    <div class="social-buttons">
+                        <button class="social-btn facebook"><i class="fab fa-facebook-f"></i></button>
+                        <button class="social-btn google"><i class="fab fa-google"></i></button>
+                        <button class="social-btn apple"><i class="fab fa-apple"></i></button>
+                    </div>
+                    <p class="switch-auth">Don't have an account? <a href="#" @click.prevent="currentAuthForm = 'signup'">Sign Up</a></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Основное приложение -->
+        <div class="app-content" :class="{active: currentScreen === 'app'}">
+            <!-- Главная страница -->
+            <div class="page home-page" :class="{active: currentPage === 'home'}">
+                <div class="search-bar">
+                    <i class="fas fa-bars menu-icon"></i>
+                    <div class="search-input">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search NFTs...">
+                    </div>
+                    <i class="fas fa-ellipsis-v menu-icon"></i>
+                </div>
+                
+                <div class="nft-post">
+                    <div class="user-info">
+                        <div class="avatar">
+                            <img src="img/056026b6db13070cbe45543d3d1ef857.png" alt="User Avatar">
+                        </div>
+                        <div>
+                            <div class="username">Olera Sydorenko</div>
+                            <div class="post-time">2 hours ago</div>
+                        </div>
+                    </div>
+                    
+                    <div class="nft-title">Sound Legacy-NFT</div>
+                    <div class="nft-description">Sound Legacy - A melody that will belong only to you, forever protected by blockchain.</div>
+                    
+                    <div class="tags" style="display: none;">
+                        <div class="tag">#MusicNFT</div>
+                        <div class="tag">#Blockchain</div>
+                        <div class="tag">#DigitalOwnership</div>
+                        <div class="tag">#OriginalTrack</div>
+                        <div class="tag">#Soundwave</div>
+                    </div>
+                    
+                    <div class="nft-content">
+                        <div class="nft-image">
+                            <img src="img/4b66197f9eb7e0792df1f70079064ea2dc357fc6.jpg" alt="NFT Image">
+                        </div>
+                        <div class="sound-wave">
+                            Sound Wave Visualization
+                        </div>
+                    </div>
+                    
+                    <div class="post-actions">
+                        <div class="action-left">
+                            <div class="like-btn">
+                                <i class="far fa-heart"></i> 124
+                            </div>
+                            <div class="comment-btn">
+                                <i class="far fa-comment"></i> 32
+                            </div>
+                            <div class="share-btn">
+                                <i class="fas fa-share"></i>
+                            </div>
+                        </div>
+                        <button class="buy-btn">Buy</button>
+                    </div>
+                </div>
+                
+                <!-- Второй пост -->
+                <div class="nft-post">
+                    <div class="user-info">
+                        <div class="avatar">
+                            <img src="img/9a7f219211dd83fedb08d30580f72b891e9efc04.jpg" alt="User Avatar">
+                        </div>
+                        <div>
+                            <div class="username">Bohdan Shevchenko</div>
+                            <div class="post-time">5 hours ago</div>
+                        </div>
+                    </div>
+                    
+                    <div class="nft-title">Symbolic of Strength</div>
+                    <div class="nft-description">This NFT represents the strength and resilience of the human spirit in digital form.</div>
+                    
+                    <div class="tags">
+                        <div class="tag">#ArtNFT</div>
+                        <div class="tag">#Symbolism</div>
+                        <div class="tag">#Strength</div>
+                    </div>
+                    
+                    <div class="nft-content">
+                        <div class="nft-image">
+                            <img src="img/056026b6db13070cbe45543d3d1ef857.png" alt="NFT Image">
+                        </div>
+                        <div class="sound-wave">
+                            Sound Wave Visualization
+                        </div>
+                    </div>
+                    
+                    <div class="post-actions">
+                        <div class="action-left">
+                            <div class="like-btn">
+                                <i class="far fa-heart"></i> 89
+                            </div>
+                            <div class="comment-btn">
+                                <i class="far fa-comment"></i> 14
+                            </div>
+                            <div class="share-btn">
+                                <i class="fas fa-share"></i>
+                            </div>
+                        </div>
+                        <button class="buy-btn">Buy</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Страница кошелька -->
+            <div class="page wallet-page" :class="{active: currentPage === 'wallet'}">
+                <div class="wallet-section">
+                    <h1 class="wallet-title">Your Wallet</h1>
+                    <div class="tokens-container">
+                        <div class="token-card">
+                            <div class="token-header">
+                                <div class="token-name">ICP</div>
+                                <div class="token-logo"></div>
+                            </div>
+                            <div class="token-footer">
+                                <div class="token-placeholder">---</div>
+                                <div class="token-divider"></div>
+                                <div class="token-usd">342$</div>
+                            </div>
+                        </div>
+                        <div class="token-card">
+                            <div class="token-header">
+                                <div class="token-name">Polygon</div>
+                                <div class="token-logo"></div>
+                            </div>
+                            <div class="token-footer">
+                                <div class="token-placeholder">---</div>
+                                <div class="token-divider"></div>
+                                <div class="token-usd">245$</div>
+                            </div>
+                        </div>
+                        <div class="token-card">
+                            <div class="token-header">
+                                <div class="token-name">Solana</div>
+                                <div class="token-logo"></div>
+                            </div>
+                            <div class="token-footer">
+                                <div class="token-placeholder">---</div>
+                                <div class="token-divider"></div>
+                                <div class="token-usd">---</div>
+                            </div>
+                        </div>
+                        <div class="token-card">
+                            <div class="token-header">
+                                <div class="token-name">Bitcoin</div>
+                                <div class="token-logo"></div>
+                            </div>
+                            <div class="token-footer">
+                                <div class="token-placeholder">---</div>
+                                <div class="token-divider"></div>
+                                <div class="token-usd">15,342$</div>
+                            </div>
+                        </div>
+                        <div class="token-card">
+                            <div class="token-header">
+                                <div class="token-name">Ethereum</div>
+                                <div class="token-logo"></div>
+                            </div>
+                            <div class="token-footer">
+                                <div class="token-placeholder">---</div>
+                                <div class="token-divider"></div>
+                                <div class="token-usd">2,154$</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="nft-section">
+                    <div class="nft-header">
+                        <div class="nft-title">All NFT</div>
+                        <button class="config-button">⚙️</button>
+                    </div>
+                    
+                    <div class="nft-container">
+                        <div class="nft-item">
+                            <img src="https://i.imgur.com/5Z0QY9W.jpg" alt="NFT">
+                        </div>
+                        <div class="nft-item">
+                            <img src="https://i.imgur.com/7Z0QY9W.jpg" alt="NFT">
+                        </div>
+                        <div class="nft-item">
+                            <img src="https://i.imgur.com/9Z0QY9W.jpg" alt="NFT">
+                        </div>
+                        <div class="nft-item">
+                            <img src="https://i.imgur.com/B1QjY7A.jpg" alt="NFT">
+                        </div>
+                        <div class="nft-item">
+                            <img src="https://i.imgur.com/D1QjY7A.jpg" alt="NFT">
+                        </div>
+                        <div class="nft-item">
+                            <img src="https://i.imgur.com/F1QjY7A.jpg" alt="NFT">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Страница уведомлений -->
+            <div class="page alert-page" :class="{active: currentPage === 'alerts'}">
+                <div class="alert-title">All notifications</div>
+                
+                <div class="notification">
+                    <div class="notification-title">
+                        <span>New NFT Successfully Purchased</span>
+                        <span class="notification-time">2 min ago</span>
+                    </div>
+                    <div class="notification-text">
+                        Congratulations! Your recently purchased NFT is now available in your collection. Check the transaction details in your wallet.
+                    </div>
+                </div>
+                
+                <div class="notification">
+                    <div class="notification-title">
+                        <span>New Follower</span>
+                        <span class="notification-time">1 hour ago</span>
+                    </div>
+                    <div class="notification-text">
+                        @DigitalArtist started following you. Check out their profile to see their latest NFT creations.
+                    </div>
+                </div>
+                
+                <div class="notification">
+                    <div class="notification-title">
+                        <span>NFT Price Alert</span>
+                        <span class="notification-time">3 hours ago</span>
+                    </div>
+                    <div class="notification-text">
+                        The NFT "Sound Legacy" you viewed earlier has dropped in price by 15%. Don't miss this opportunity!
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Страница профиля -->
+            <div class="page profile-page" :class="{active: currentPage === 'profile'}">
+                <div class="profile-header">
+                    <div class="back-btn" @click="currentPage = 'home'">
+                        <i class="fas fa-arrow-left"></i>
+                    </div>
+                    <div class="profile-avatar">
+                        <img src="img/4b66197f9eb7e0792df1f70079064ea2dc357fc6.jpg" alt="Profile Avatar">
+                    </div>
+                    <div class="profile-name">@DigitalExplorer</div>
+                    <div class="profile-location">Ukraine</div>
+                    <div class="profile-bio">
+                        Explorer of the world around us, capturing unique moments and discovering magic in everyday life.
+                    </div>
+                </div>
+                
+                <div class="section-title">Account</div>
+                
+                <div class="account-card">
+                    <div class="account-item">
+                        <div>
+                            <i class="fas fa-palette"></i>
+                            <span>Manage theme</span>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="account-item">
+                        <div>
+                            <i class="fas fa-lock"></i>
+                            <span>Security</span>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="account-item">
+                        <div>
+                            <i class="fas fa-wallet"></i>
+                            <span>Wallet settings</span>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="account-item">
+                        <div>
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Страница добавления NFT - Шаг 1 (теперь единственный шаг) -->
+            <div class="page add-nft-page" :class="{active: currentPage === 'add-nft'}">
+                <h2 class="add-nft-title">Create NFT</h2>
+                
+                <div class="form-section">
+                    <span class="section-title">Property NFT Type</span>
+                    <div class="ownership-options">
+                        <div class="ownership-option" 
+                             :class="{selected: ownershipType === 'own'}"
+                             @click="ownershipType = 'own'">
+                            <i class="fas fa-user"></i>
+                            <div>Own</div>
+                        </div>
+                        <div class="ownership-option" 
+                             :class="{selected: ownershipType === 'coauthored'}"
+                             @click="ownershipType = 'coauthored'">
+                            <i class="fas fa-users"></i>
+                            <div>Co-authored</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <span class="section-title">NFT name*</span>
+                    <input type="text" class="text-input" placeholder="Enter NFT name" v-model="nftName">
+                </div>
+                
+                <div class="form-section">
+                    <span class="section-title">NFT image*</span>
+                    <div class="upload-area" @click="triggerFileInput('nft')">
+                        <div class="upload-icon">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        <div class="upload-text">
+                            <strong>Drag and drop or click to upload</strong>
+                            <small>You may change this after deploying your contract.<br>Recommended size: 350 x 350.<br>File types: JPG, PNG, SVG, or GIF</small>
+                        </div>
+                        <input type="file" id="nft-upload" style="display: none;" @change="handleNftUpload">
+                    </div>
+                </div>
+                
+                <button class="continue-btn" style="background-color: white; color: #01FF77; border: 1px solid #01FF77; margin-bottom: 15px;">Convert Photo to NFT</button>
+                <button class="continue-btn" style="background-color: white; color: #01FF77; border: 1px solid #01FF77; margin-bottom: 25px;">Generate NFT using AI</button>
+                
+                <div class="form-section">
+                    <span class="section-title">Description*</span>
+                    <textarea class="text-input" rows="3" placeholder="Enter description here..." v-model="nftDescription"></textarea>
+                </div>
+                
+                <div class="form-section">
+                    <span class="section-title">Tags*</span>
+                    <input type="text" class="tags-input" placeholder="Enter tags #here" v-model="nftTags">
+                </div>
+                
+                <div class="form-section">
+                    <span class="section-title">External link*</span>
+                    <input type="text" class="text-input" placeholder="Enter URL" v-model="nftExternalLink">
+                </div>
+                
+                <div class="form-section">
+                    <span class="section-title">Attributes</span>
+                    <div style="color: #888; margin-bottom: 10px;">Number of attributes</div>
+                    <div class="attributes-control">
+                        <button class="attribute-btn" @click="decreaseAttributes">-</button>
+                        <span class="attributes-count">{{ attributesCount }}</span>
+                        <button class="attribute-btn" @click="increaseAttributes">+</button>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <span class="section-title">Traits</span>
+                    <div style="color: #888; margin-bottom: 10px;">Traits describe attributes of your item. They appear as filters inside your collection page and are also listed out inside your item page.</div>
+                    <button class="add-trait-btn" @click="addTrait">
+                        <i class="fas fa-plus"></i>
+                        <span>Add traits</span>
+                    </button>
+                </div>
+                
+                <button class="create-nft-btn" @click="createNFT">Create NFT</button>
+
+                <!-- Раздел с QR-кодом -->
+                <div class="qr-section">
+                    <h3 class="qr-title">Share your NFT</h3>
+                    <div class="qr-container" id="qrcode"></div>
+                    <button class="generate-qr-btn" @click="generateQRCode">Generate QR Code</button>
+                </div>
+            </div>
+            
+            <!-- Нижняя навигация -->
+            <div class="bottom-nav">
+                <div class="nav-item" :class="{active: currentPage === 'home'}" @click="currentPage = 'home'">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </div>
+                <div class="nav-item" :class="{active: currentPage === 'wallet'}" @click="currentPage = 'wallet'">
+                    <i class="fas fa-wallet"></i>
+                    <span>Wallet</span>
+                </div>
+                <div class="nav-item" :class="{active: currentPage === 'add-nft'}" @click="currentPage = 'add-nft'">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Add NFT</span>
+                </div>
+                <div class="nav-item" :class="{active: currentPage === 'alerts'}" @click="currentPage = 'alerts'">
+                    <i class="fas fa-bell"></i>
+                    <span>Alerts</span>
+                </div>
+                <div class="nav-item" :class="{active: currentPage === 'profile'}" @click="currentPage = 'profile'">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="screen welcome-screen">
-        <div class="content">
-            <h1 class="welcome-title">Welcome</h1>
-            <p class="welcome-text">Is not just a platform – it's your safeguard for creative ownership</p>
-            <div class="features">
-                <div class="feature-item">
-                    <span>PROTECT YOUR PROPERTY</span>
-                    <i class="fas fa-brain icon-feature"></i>
-                </div>
-                <div class="feature-item">
-                    <span>SECURE YOUR IDEAS</span>
-                    <i class="fas fa-lock icon-feature"></i>
-                </div>
-                <div class="feature-item">
-                    <span>EXPERIENCE YOUR LEGACY</span>
-                    <i class="fas fa-magic icon-feature"></i>
-                </div>
-            </div>
-            <div class="next-btn-container">
-                <button class="next-btn">Next</button>
-            </div>
-        </div>
-    </div>
+    <script>
+        const { createApp, ref, onMounted } = Vue;
+        
+        createApp({
+            setup() {
+                const currentScreen = ref('splash');
+                const currentAuthForm = ref('signup');
+                const currentPage = ref('home');
+                const backgroundPosition = ref('30% center');
+                const isPlaying = ref(false);
+                const currentTimeDisplay = ref('0:00');
+                const durationDisplay = ref('3:45');
+                const activeBars = ref(0);
+                const waveHeights = Array(20).fill().map(() => Math.floor(Math.random() * 20) + 5);
+                
+                // NFT Creation Data
+                const ownershipType = ref('own');
+                const nftName = ref('');
+                const nftDescription = ref('');
+                const nftTags = ref('');
+                const nftExternalLink = ref('');
+                const attributesCount = ref(0);
+                const traits = ref([]);
+                const qrCounter = ref(1);
+                
+                // Обработка авторизации
+                const handleAuth = (type) => {
+                    if (type === 'signup') {
+                        currentScreen.value = 'app';
+                    } else {
+                        currentScreen.value = 'app';
+                    }
+                };
+                
+                const triggerFileInput = (type) => {
+                    document.getElementById(`${type}-upload`).click();
+                };
+                
+                const handleNftUpload = (event) => {
+                    console.log('NFT image uploaded:', event.target.files[0]);
+                };
+                
+                const increaseAttributes = () => {
+                    attributesCount.value++;
+                };
+                
+                const decreaseAttributes = () => {
+                    if (attributesCount.value > 0) {
+                        attributesCount.value--;
+                    }
+                };
+                
+                const addTrait = () => {
+                    traits.value.push({
+                        trait_type: '',
+                        value: ''
+                    });
+                };
+                
+                const createNFT = () => {
+                    const nftData = {
+                        name: nftName.value,
+                        description: nftDescription.value,
+                        image: document.getElementById('nft-upload').files[0],
+                        attributes: Array(attributesCount.value).fill({}),
+                        traits: traits.value,
+                        external_link: nftExternalLink.value,
+                        ownership_type: ownershipType.value
+                    };
+                    
+                    console.log('Creating NFT:', nftData);
+                    alert('NFT created successfully!');
+                    currentPage.value = 'home';
+                };
+                
+                const togglePlay = () => {
+                    isPlaying.value = !isPlaying.value;
+                    
+                    if (isPlaying.value) {
+                        // Имитация воспроизведения
+                        let time = 0;
+                        const interval = setInterval(() => {
+                            time += 1;
+                            const minutes = Math.floor(time / 60);
+                            const seconds = time % 60;
+                            currentTimeDisplay.value = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                            activeBars.value = Math.floor((time / 225) * 20);
+                            
+                            if (time >= 225) {
+                                clearInterval(interval);
+                                isPlaying.value = false;
+                                currentTimeDisplay.value = '0:00';
+                                activeBars.value = 0;
+                            }
+                        }, 1000);
+                    }
+                };
 
-    <div class="screen auth-screen">
-
-        <div class="auth-form signup-form active">
-            <div class="auth-header">
-                <h2 class="auth-title">Sign Up</h2>
-            </div>
-            <div class="auth-container">
-                <form>
-                    <div class="form-group">
-                        <label>Phone Number</label>
-                        <input type="tel" placeholder="+380995683023" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Password</label>
-                        <input type="password" placeholder="Enter password" required>
-                    </div>
-                    <button type="submit" class="submit-btn">Sign Up</button>
-                </form>
-                <p class="divider">or</p>
-                <div class="social-buttons">
-                    <button class="social-btn facebook"><i class="fab fa-facebook-f"></i></button>
-                    <button class="social-btn google"><i class="fab fa-google"></i></button>
-                    <button class="social-btn apple"><i class="fab fa-apple"></i></button>
-                </div>
-            </div>
-        </div>
-
-        <div class="auth-form login-form">
-            <div class="auth-header">
-                <h2 class="auth-title">Sign In</h2>
-            </div>
-            <div class="auth-container">
-                <form>
-                    <div class="form-group">
-                        <label>Phone Number</label>
-                        <input type="tel" placeholder="+380995683023" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Password</label>
-                        <input type="password" placeholder="Enter password" required>
-                    </div>
-                    <button type="submit" class="submit-btn">Sign In</button>
-                    <button class="forgot-password">Forgot password?</button>
-                </form>
-                <p class="divider">or</p>
-                <div class="social-buttons">
-                    <button class="social-btn facebook"><i class="fab fa-facebook-f"></i></button>
-                    <button class="social-btn google"><i class="fab fa-google"></i></button>
-                    <button class="social-btn apple"><i class="fab fa-apple"></i></button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="background"></div>
-
-    <script src="script.js"></script>
+                // Генерация QR-кода
+                const generateQRCode = () => {
+                    // Очищаем предыдущий QR-код
+                    document.getElementById('qrcode').innerHTML = '';
+                    
+                    // Генерируем текст для QR-кода
+                    const text = `NFT QR Code #${qrCounter.value}\nName: ${nftName.value}\nDescription: ${nftDescription.value}`;
+                    
+                    // Создаем новый QR-код
+                    new QRCode(document.getElementById('qrcode'), {
+                        text: text,
+                        width: 200,
+                        height: 200,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+                    
+                    qrCounter.value++;
+                };
+                
+                // Инициализация приложения
+                onMounted(() => {
+                    // Анимация фона при переходе на welcome screen
+                    setTimeout(() => {
+                        currentScreen.value = 'welcome';
+                        backgroundPosition.value = '70% center';
+                    }, 2000);
+                });
+                
+                return {
+                    currentScreen,
+                    currentAuthForm,
+                    currentPage,
+                    backgroundPosition,
+                    isPlaying,
+                    currentTimeDisplay,
+                    durationDisplay,
+                    activeBars,
+                    waveHeights,
+                    ownershipType,
+                    nftName,
+                    nftDescription,
+                    nftTags,
+                    nftExternalLink,
+                    attributesCount,
+                    traits,
+                    handleAuth,
+                    triggerFileInput,
+                    handleNftUpload,
+                    increaseAttributes,
+                    decreaseAttributes,
+                    addTrait,
+                    createNFT,
+                    togglePlay,
+                    generateQRCode
+                };
+            }
+        }).mount('#app');
+    </script>
 </body>
-
 </html>
